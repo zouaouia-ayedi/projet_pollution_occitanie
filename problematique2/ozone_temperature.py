@@ -1,0 +1,44 @@
+import sqlite3 # importer la bibliothèque "sqlite3"
+import csv # importation de la bibliothèque pour importer en csv
+
+
+#__________________________________________________________________________________________________________________________________________________
+
+
+
+#Connexion à la base de donnée par un chemin relatif
+connexion = sqlite3.connect("../BD/projet_statinfo.db")
+cursor = connexion.cursor()
+
+
+#__________________________________________________________________________________________________________________________________________________
+
+
+#Exécution de la requête SQL
+cursor.execute("""
+                    SELECT ROUND(c.Tmax_med) AS temperature, AVG(p.valeur_poll) AS ozone_moyen
+                    FROM mesures_occitanie_pollution as p
+                    INNER JOIN geo_climatique as c ON p.code_insee = c.code_insee
+                    WHERE p.nom_poll = 'O3'
+                    GROUP BY ROUND(c.Tmax_med)
+                    ORDER BY temperature ; 
+               """)
+
+#récupère les données
+resultats = cursor.fetchall()
+
+
+#__________________________________________________________________________________________________________________________________________________
+
+
+#Importer les données dans un fichier CSV
+with open("ozone_temperature.csv", "w", newline="", encoding="utf-8") as f:
+    writer = csv.writer(f, delimiter=";")
+
+    writer.writerow(["temperature", "ozone_moyen"])
+
+    for temperature, ozone in resultats:
+        writer.writerow([
+            temperature, str(round(ozone, 2)).replace(".", ",")
+        ])
+        

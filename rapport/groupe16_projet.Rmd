@@ -1,0 +1,969 @@
+---
+title: null
+author: null
+date: null
+output:
+  html_document:
+    toc: false
+---
+<!-- style de la page pour un meilleur visuelle -->
+<style>
+h1 {
+  color: #6a0dad;
+}
+</style>
+
+<style>
+body {
+  background-color: #f5e6ff;
+}
+</style>
+
+<!-- fin des style du visuelle -->
+
+
+<style>
+.full-width {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+.banner-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+</style>
+<div class="full-width">
+  <img src="image/photo1.png" class="banner-img">
+</div>
+
+
+```{r setup2, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+<h1 style="text-align:center;">UE MI0A403T-Projet Info-Stat - Groupe 16</h1>
+
+<p style="text-align:center;">
+AYEDI Zouaouia (31,67%), BELATAR Ikram (31,67%), BEN JEDDOU Souha (5%), GHEDHOUI Dourra (31,67%)
+</p>
+
+<div style="
+  width: 85%;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  border: 2px solid #9b59b6;
+  border-radius: 15px;
+  background-color: #e9e9e9 ;
+  text-align: left;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+">
+
+  <h2 style="text-align: center; color: #6a0dad;">Sommaire</h2>
+
+  <ol type="I" style="padding-left: 20px; line-height: 1.8;">
+    <li><a href="#i-introduction">Introduction</a></li>
+
+    <li>
+      <a href="#base-de-donnees">Base de données</a>
+      <ol style="margin-left: 20px;">
+      
+        <li><a href="#construction-de-la-base-de-donnees">Construction de la base de données</a></li>
+        <li><a href="#extractions-de-tables-depuis-la-base-de-donnees">Extractions des tables</a></li>
+        
+      </ol>
+    </li>
+
+    <li><a href="#etudes">Études des problématiques</a></li>
+    <ol style="margin-left: 20px;">
+      
+        <li><a href="#pb1">Problématique 1</a></li>
+        <ul>
+              <li><a href="#analyse1">Analyse univariée</a></li>
+              <li><a href="#analyse2">Analyse bivariée</a></li>
+              <li><a href="#conclusion1">Conclusion générale</a></li>
+        </ul>
+              
+        <li><a href="#pb2">Problématique 2</a></li>
+        <ul>
+              <li><a href="#analyse21">Analyse univariée</a></li>
+              <li><a href="#analyse22">Analyse bivariée</a></li>
+              <li><a href="#conclusion2">Conclusion générale</a></li>
+        </ul>
+        
+        <li><a href="#pb3">Problématique 3</a></li>
+        <ul>
+              <li><a href="#analyse31">Analyse univariée</a></li>
+              <li><a href="#analyse32">Analyse bivariée</a></li>
+              <li><a href="#conclusion3">Conclusion générale</a></li>
+        </ul>
+        
+      </ol>
+    
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ol>
+
+</div>
+
+
+# I-Introduction
+<img src="image/carte_occitanie.png" 
+     style="float: right; width: 300px; margin: 10px;">
+     
+Dans le cadre de ce Projet Informatique et Statistique de l’UE MI0A403T, nous avons eu l’occasion d’exploiter des données géographiques, socio-économiques et environnementales afin de répondre à différentes problématiques statistiques que nous avons nous-mêmes définies au sujet des communes de la région Occitanie.  
+
+Dans un premier temps, une base de données a été construite sous <strong>Python</strong> à l’aide de la bibliothèque  [SQLITE3](https://docs.python.org/3/library/sqlite3.html) . Cette première démarche nous a permis de structurer et d’organiser les données qui nous ont été fournies en plusieurs tables distinctes, tout en garantissant leur cohérence grâce à l’utilisation de contraintes et de relations entre les différentes tables.
+
+ Dans un second temps, après avoir défini des problématiques qui nous semblaient essentielles, nous avons mis en place des requêtes SQL à partir de nos compétences et de compléments, afin d’extraire les informations pertinentes pour y répondre. Les résultats obtenus ont ensuite été exploités dans une analyse statistique, permettant ainsi de mettre en évidence des relations entre certaines variables/attributs, notamment entre les indicateurs socio-économiques et les niveaux de pollution, ou encore les indicateurs géographiques.
+
+Ce rapport présente ainsi les différentes étapes que nous avons réalisées, depuis la construction de la base de données jusqu’à l’analyse des résultats. Ce travail s’inscrit donc dans une démarche d’analyse de données visant à mettre en lumière des corrélations entre différents phénomènes liés à la pollution en Occitanie.
+
+# II-Base de données {#base-de-donnees}
+Pour commencer, la présentation il est logique de débuter par la base de données. Pour ce fait, nous commencerons par présenter la façon dont celle-ci a été construite, en détaillant les différentes étapes mises en oeuvre, les difficultées rencontrer ainsi que les choix effectués concernant l'organisation des données.
+
+### 1) Construction de la base de données {#construction-de-la-base-de-donnees}
+
+<img src="image/diagramme_activitee.jpg" 
+     style="float: left; width: 400px; margin: 10px 20px 10px 10px;">
+     
+En premier lieu comme on le voit sur le Diagramme d'activitée nous avons créer notre base de donnée nommée 'projet_statinfo.db', une fois la création réussite on a pu y accéder afin de créer les Tables. Pour le choix des Relations, 2 choix s'offrait à nous :
+
+- Séparer les données fournis en plusieurs tables distincts (exemple -> Table Communes, Table Departements,...) avec pour chaque Relations des contraintes simple et bien sûr des liens entre les différentes tables ;
+
+- Séparer les données fournis en seulement 3 Tables distincts qui correspondent chacun aux trois tableaux de données fournis.
+
+<br/>
+Pour ce fait on a analyser les données et on a constatez que pour déterminer les contraintes celà serait plus dur que prévu, notamment au vue de nos compétences sur la bibliothèque SQLITE3. Nous avons finalement trouver, et décider d'utiliser le choix N°2, étant donnée que nous avons constatez que c'était le plus judicieux. En effet, après avoir déterminer la manière dont nous voulions que notre BASE soit et après avoir passer en revu rapidement nos données fournis, on a obtait pour que les 3 Relations que l'on créerais correspondent distinctivements au 3 fichiers fournis. Nous avons donc créer ;
+
+- TABLE -> geo_climatique ;
+
+- TABLE -> mesures_occitanie_pollution ;
+
+- TABLE -> socio_economique
+
+<br/>
+<br/>
+
+Pour la construction des différentes Relations :
+
+<div style="
+  width: 90%;
+  margin: 40px auto;
+">
+CRÉATION DE LA TABLE <strong>MESURES_OCCITANIE_POLLUTION</strong>
+```{sql eval=FALSE}
+CREATE TABLE IF NOT EXISTS mesures_occitanie_pollution (
+               id INTEGER PRIMARY KEY AUTOINCREMENT,
+               nom_dept VARCHAR(100) NOT NULL,
+               nom_com VARCHAR(100) NOT NULL,
+               code_insee INT NOT NULL,
+               nom_station VARCHAR(100),
+               code_station VARCHAR(7),
+               typologie VARCHAR(100),
+               influence VARCHAR(100),
+               nom_poll VARCHAR(20) NOT NULL,
+               valeur_poll DECIMAL,
+               jour INT CHECK(jour BETWEEN 1 AND 31),
+               mois INT CHECK(mois BETWEEN 1 AND 12),
+               annee INT CHECK(annee >= 2000),
+               FOREIGN KEY (code_insee) REFERENCES socio_economique(code_insee),
+               FOREIGN KEY (nom_com) REFERENCES geo_climatique(nom_com)
+               );
+```
+Comme on le voit ici lorsqu'on a voulu créer la Table 'mesures_occitanie_pollution' on a constater qu'il était difficile d'identifier une clé primaire facile à manier, c'est pour cela que l'on a opter pour en créer une artificielle 'id' avec le fameux <strong>AUTOINCREMENT</strong>. Pour le reste des contraintes d'intégrités, on les a ajouter car elles nous semblaient logique (ex: jour compris entre 1 et 31, mois compris entre 1 et 12 pour les 12mois de l'année,..). De plus les contraintes d'intégrité référentielle telle que les <strong>FOREIGN KEY</strong> que l'on a établie, nous permettent de garantir que les relations entre les Tabmes restent cohérentes. Par ailleurs nous avons choisi que cette Table serait celle qui relie les deux TABLES que l'on verra plus tard, étant donné que c'est dans celle la que l'ai donnée notamment les valeurs des polluant sont les plus importants.
+</div>
+
+
+
+<br/>
+<div style="
+  width: 90%;
+  margin: 40px auto;
+">
+CRÉATION DE LA TABLE <strong>GEO_CLIMATIQUE</strong>
+```{sql eval=FALSE}
+CREATE TABLE IF NOT EXISTS geo_climatique (
+               code_insee INT NOT NULL,
+               nom_com VARCHAR(100) NOT NULL,
+               reg_code INT,
+               reg_nom VARCHAR(100),
+               dep_code INT,
+               dep_nom VARCHAR(100),
+               population INT CHECK(population >= 0), 
+               superficie_km2 INT CHECK(superficie_km2 >= 0), 
+               densite INT CHECK(densite >= 0), 
+               latitude DECIMAL,
+               longitude DECIMAL, 
+               densite_cat VARCHAR(100),
+               alti_med INT,
+               RR_med DECIMAL,
+               NBJRR1_med INT,
+               NBJRR5_med INT,
+               NBJRR10_med INT,
+               Tmin_med DECIMAL,
+               Tmax_med DECIMAL,
+               Tens_vap_med DECIMAL,
+               Force_vent_med DECIMAL,
+               Insolation_med DECIMAL,
+               Rayonnement_med DECIMAL,
+               PRIMARY KEY (code_insee, nom_com),
+               CHECK(Tmin_med <= Tmax_med) 
+               );
+```
+Ici pour la création de la Table, comme pour le fichier qui nous a été fournis nous avons repris les mêmes attributs tout en changeant légèrement les noms pour faciliter la manipulation lors des analyses. De plus nous avons rajouter des contraintes d'intégrités logique comme vérifier que la population ne soit pas un nombre entier négatif ou bien même vérifier que les Températures minimal soit bien égale ou inférieur à sa Température maximal distinct. Par ailleurs le fait d'avoir définis comme clé primaire à l'aide de la fonction <strong>PRIMARY KEY</strong> deux attributs a été un choix de notre part.
+</div>
+
+
+
+<br/>
+<div style="
+  width: 90%;
+  margin: 40px auto;
+">
+CRÉATION DE LA TABLE <strong>SOCIO_ECONOMIQUE</strong>
+```{sql eval=FALSE}
+CREATE TABLE IF NOT EXISTS  socio_economique (
+               code_insee INT PRIMARY KEY,
+               nom_com VARCHAR(100) NOT NULL,
+               niveau_vie_median_2021 INT CHECK(niveau_vie_median_2021 >= 0),
+               nb_logements_2022 INT CHECK(nb_logements_2022 >= 0),
+               pourcentage_appartements_2022 DECIMAL CHECK((pourcentage_appartements_2022 BETWEEN 0 AND 100) OR pourcentage_appartements_2022 IS NULL ),
+               pourcentage_locataires_dans_residence_principale_2022 DECIMAL CHECK(pourcentage_locataires_dans_residence_principale_2022 BETWEEN 0 AND 100),
+               evolution_2017_2023 DECIMAL,
+               population_municipale_2023 INT CHECK(population_municipale_2023 >= 0),
+               taux_activite_tranche15_64_en_2022 DECIMAL CHECK(taux_activite_tranche15_64_en_2022 BETWEEN 0 AND 100)
+               );
+```
+De même pour cette Table 'socio_economique', comme pour la Table précédente nous n'avons pas eu de soucis a déterminer une clé primaire. Après avoir analyser les données nous avons choisi de prendre l'attribut <strong>code_insee</strong> comme clé primaire, étant donné que c'était le seule attribut unique. Le cas particulier pour cette Table, c'est que nous avons rencontrer un problème lors de l'insertion des données. Notamment pour les contraintes concernant les pourcentages, en effet on a constater qu'il y avait des attributs comme par exemple <strong>pourcentage_appartements_2022</strong> où certaines données n'étaient pas des entier compris entre 0 et 100 %, mais plutôt <strong>'N/A - résultat non disponible'</strong> ou bien <strong>'N/A - division par 0'</strong>. Afin de correspondre aux contraintes mise en place lors de la création de la Table, nous avons donc opter pour faire un nettoyage de donnée en remplaçant toute les données non fournis pas des case vide (<strong>NULL</strong>)
+</div>
+ 
+
+
+### 2) Extractions des tables depuis la base de données {#extractions-de-tables-depuis-la-base-de-donnees}
+Dans cette partie, nous exploitons la base de données construite précédemment à l’aide de requêtes SQL. Ces extractions permettent d’isoler, de regrouper et d’analyser les données pertinentes en lien avec les problématiques étudiées. Pour chacunes des question que nous nous sommes posées nous avons procédée de la même manière.
+
+Exemple concret (extrait d'une de nos problématiques que nous verrons plus tard) -> 
+
+```{r eval=FALSE}
+#Exécution de la requête SQL
+cursur.execute("""
+               SELECT nom_com, nom_poll, mois, ROUND(AVG(valeur_poll),2) AS moyenne_pollution
+                FROM mesures_occitanie_pollution
+                WHERE (lower(nom_com) = 'montpellier' or lower(nom_com)= 'lattes') AND annee =2025 AND nom_poll ='O3'
+                GROUP BY nom_com, nom_poll, mois ; """)
+
+#récupère les données
+resultats = cursur.fetchall()
+
+
+#____________________________________________________________________________________________
+
+
+#Importer les données dans un fichier CSV
+with open("O3_mensuelle_2025_montpellier_et_lattes.csv", "w", newline="", encoding="utf-8") as f:
+    writer = csv.writer(f, delimiter=";")
+
+    writer.writerow(["nom_com", "nom_poll", "mois", "moyenne_pollution"])
+
+    for nom_com, nom_poll, mois, moyenne in resultats:
+        writer.writerow([
+            nom_com, nom_poll, mois,  moyenne
+        ])
+```
+Pour exporter nos données que l'on a sélectionner avec nos différentes requêtes, nous avons simplement créer un fichier dans lequel à l'aide d'une boucle nous insérons les données ligne par ligne.
+
+
+
+
+```{r setup, include=FALSE}
+packages <- c("ggplot2", "tidyverse")
+
+for (p in packages) {
+  if (!require(p, character.only = TRUE)) {
+    options(repos = c(CRAN = "https://cloud.r-project.org"))
+    install.packages(p, dependencies = TRUE)
+    library(p, character.only = TRUE)
+  }
+}
+```
+
+# III-Études des problématiques {#etudes}
+
+
+
+
+
+
+
+
+
+## Problématique 1 : Les villes proches, présentent-elles des niveaux moyens de pollution similaires ou existe-t-il un impact de la proximité géographique sur la pollution de l’air ? {#pb1}
+
+Pour étudier l’impact de la proximité géographique sur la pollution de l’air, nous avons utilisé les données issues de la base de données construite précédemment. L’objectif est de comparer les niveaux moyens de pollution entre deux communes proches, Montpellier et Lattes.
+
+Pour cela, nous avons utilisé la table mesures_occitanie_pollution, qui contient les mesures journalières de pollution (type de polluant, valeur mesurée, date, commune, etc.). Nous avons ensuite sélectionné uniquement les données correspondant à ces deux communes afin de pouvoir effectuer une comparaison pertinente.
+
+### 1-Analyse univariée {#analyse1}
+
+Pour commnencer cette analyse univariée, nous avons eu besoin d'extraire des données. Dans cette étude comme nous l'avons expliquer nous nous sommes concentrer sur les deux villes distincts <strong>Montpellier</strong> et <strong>Lattes</strong>.
+
+```{sql eval= FALSE}
+SELECT nom_com, ROUND(AVG(valeur_poll),2) AS moyenne_pollution
+                FROM mesures_occitanie_pollution
+                WHERE lower(nom_com) = 'montpellier' or lower(nom_com)= 'lattes'
+                GROUP BY nom_com ;
+```
+Cette requête compare la pollution moyenne en utilisant l'attribut valeur_poll avec <strong>AVG</strong> pour calculer la moyenne puis <strong>ROUND</strong> pour l’arrondir, et l’attribut nom_com transformé en minuscules avec <strong>LOWER</strong> afin de filtrer les deux communes Montpellier et Lattes dans <strong>WHERE</strong> puis regrouper les résultats avec <strong>GROUP BY </strong> nom_com pour obtenir une moyenne par commune.
+
+<br/>
+
+Dans un premier temps, nous étudions la variable "pollution moyenne" afin de mieux comprendre sa répartition pour chaque commune (Montpellier et Lattes).
+
+```{r, echo=FALSE}
+donnees_uni <- read.csv2("../problematique1/csv/comparaison_poll_montpellier_et_lattes.csv")
+
+donnees_uni$moyenne_pollution <- as.numeric(gsub(",", ".", donnees_uni$moyenne_pollution))
+
+summary(donnees_uni$moyenne_pollution)
+
+barplot(donnees_uni$moyenne_pollution,
+        names.arg = donnees_uni$ville,
+        col = c("red", "lightblue"),
+        main = "Pollution moyenne par ville",
+        ylab = "Pollution moyenne")
+```
+**Interprétation :**  
+Cette analyse permet d’observer les niveaux de pollution moyenne dans chaque commune. Elle donne une première idée de la répartition des données avant de comparer les deux villes.
+
+
+
+#### a-Comparaison de la pollution moyenne entre Montpellier et Lattes {#a1}
+
+Nous réalisons ici une analyse bivariée afin d’étudier la relation entre la commune et la pollution moyenne.
+
+**Question :**  
+Les villes proches comme Montpellier et Lattes présentent-elles des niveaux moyens de pollution similaires ?
+
+**Justification :**  
+Montpellier et Lattes sont deux communes proches géographiquement. Il est donc pertinent de vérifier si cette proximité se traduit par des niveaux de pollution comparables.
+
+**Méthode :**  
+Pour comparer la pollution moyenne entre Montpellier et Lattes, nous utilisons un diagramme circulaire (camembert) qui permet de visualiser la part de pollution pour chaque ville.
+
+**Graphe :**
+
+```{r, fig.width=5, fig.height=5, echo=FALSE}
+# Import des données
+donnees <- read.csv2("../problematique1/csv/comparaison_poll_montpellier_et_lattes.csv")
+
+# Correction des nombres
+donnees$moyenne_pollution <- as.numeric(gsub(",", ".", donnees$moyenne_pollution))
+
+# Camembert
+pie(donnees$moyenne_pollution,
+    labels = donnees$ville,
+    col = c("red", "lightblue"),
+    main = "Pollution moyenne par ville")
+```
+
+**Interprétation :**  
+Le graphique montre la répartition de la pollution moyenne entre les deux communes. On observe que les parts sont relativement proches, ce qui suggère que les niveaux de pollution sont similaires.
+
+#### b-Moyenne de pollution par polluant {#b1}
+
+Nous réalisons ici une analyse bivariée afin d’étudier la relation entre le type de polluant, la commune et la concentration de pollution.
+
+**Question :**  
+Les niveaux de pollution sont-ils similaires entre Montpellier et Lattes pour chaque polluant ?
+
+**Justification :**  
+Même si deux villes sont proches, les concentrations peuvent varier selon les polluants. Il est donc intéressant de comparer ces différences.
+
+**Méthode :** 
+
+```{sql eval= FALSE}
+SELECT nom_com, nom_poll, AVG(valeur_poll) AS moyenne
+                FROM mesures_occitanie_pollution
+                WHERE lower(nom_com) = 'montpellier' or lower(nom_com)= 'lattes'
+                GROUP BY nom_com, nom_poll
+                ORDER BY nom_com, moyenne desc ;
+```
+Cette requête permet de calculer la moyenne de pollution pour chaque polluant à partir de l’attribut valeur_poll, pour les deux communes nom_com Montpellier et Lattes , en filtrant avec <strong>WHERE et LOWER</strong>, puis en regroupant les données par communes et par polluant avec <strong> GROUP BY </strong> afin d’obtenir une moyenne par polluant pour chaque ville.
+
+Pour la partie statistique nous utilisons un diagramme en barres permettant de comparer les concentrations moyennes des différents polluants entre Montpellier et Lattes.
+
+**Graphe :**
+
+```{r, fig.width=7, fig.height=5, echo=FALSE}
+donnees2 <- read.csv2("../problematique1/csv/moypoll_par_polluant_pour_mtp_et_lattes.csv")
+donnees2$moyenne_pollution <- as.numeric(gsub(",", ".", donnees2$moyenne))
+noms <- paste(donnees2$nom_com, "-", donnees2$nom_poll)
+
+par(mar = c(10, 4, 4, 2))
+barplot(donnees2$moyenne_pollution,
+        names.arg = noms,
+        col = "lightblue",
+        las = 2,
+        cex.names = 0.7,
+        main = "Pollution moyenne par polluant",
+        ylab = "Concentration moyenne")
+     
+```
+ 
+ **Interprétation :**  
+Le graphique montre que les niveaux de pollution varient selon le polluant étudié. Des différences apparaissent entre les deux villes, ce qui indique que la proximité géographique ne garantit pas des concentrations identiques.
+
+
+### 2-Analyse bivariée {#analyse2}
+
+#### a-Comparaison annuelle de la moyenne du polluant O3 {#a2}
+
+Nous réalisons ici une analyse bivariée afin d’étudier la relation entre le temps (année), la commune et la pollution.
+
+**Question :**  
+L’évolution annuelle de la pollution est-elle similaire entre Montpellier et Lattes ?
+
+**Justification :**  
+Comparer les données sur plusieurs années permet d’identifier si les deux villes suivent les mêmes tendances dans le temps.
+
+**Méthode :**  
+
+```{sql eval= FALSE}
+SELECT nom_com, nom_poll, annee, ROUND(AVG(valeur_poll),2) AS moyenne_pollution
+                FROM mesures_occitanie_pollution
+                WHERE (lower(nom_com) = 'montpellier' or lower(nom_com)= 'lattes') AND nom_poll ='O3'
+                GROUP BY nom_com, nom_poll, annee ; 
+```
+Cette requête permet de calculer la moyenne de pollution pour le polluant en commun O3 avec l’attribut valeur_poll grâce à <strong>AVG puis ROUND</strong>, pour les communes <strong>nom_com Montpellier et Lattes</strong> filtrées avec <strong>LOWER</strong>, puis de regrouper les résultats par année avec <strong>GROUP BY</strong> afin d’obtenir une moyenne annuelle de l’ozone par commune.
+
+Afin d'analyser au mieux,nous utilisons un graphique en courbes représentant la concentration moyenne en fonction des années pour chaque commune.
+
+**Graphe :**
+
+```{r, fig.width=7, fig.height=5, echo=FALSE}
+donnees3 <- read.csv2("../problematique1/csv/comparaison_ans_moy_polluant_o3_communs.csv")
+donnees3$moyenne_pollution <- as.numeric(gsub(",", ".", donnees3$moyenne_pollution))
+lattes <- donnees3[donnees3$nom_com == "LATTES", ]
+montpellier <- donnees3[donnees3$nom_com == "MONTPELLIER", ]
+plot(lattes$annee, lattes$moyenne_pollution,
+     type = "o",
+     col = "purple",
+     pch = 16,
+     ylim = range(donnees3$moyenne_pollution),
+     xlab = "Année",
+     ylab = "Concentration",
+     main = "Comparaison annuelle du polluant O3")
+
+lines(montpellier$annee, montpellier$moyenne_pollution,
+      type = "o",
+      col = "blue",
+      pch = 16)
+
+legend("topright",
+       legend = c("Lattes", "Montpellier"),
+       col = c("purple", "blue"),
+       lty = 1,
+       pch = 16)
+```
+
+**Interprétation :**  
+Les courbes montrent que les deux villes suivent globalement des tendances similaires. Cela suggère qu’elles sont influencées par des facteurs communs, même si certaines différences apparaissent selon les années.
+
+#### b-Comparaisons des niveaux d'Ozone (O3) mensuelle entre **Montpellier** et **Lattes**
+
+Nous réalisons ici une analyse bivariée afin d’étudier la relation entre le temps (mois), la commune et la pollution.
+
+**Question :**  
+Les niveaux de pollution évoluent-ils de la même manière entre Montpellier et Lattes au cours de l’année 2025 ?
+
+**Justification :**  
+L’analyse mensuelle permet d’observer plus finement les variations de pollution et de comparer les deux villes sur une période courte.
+
+**Méthode :** 
+
+```{sql eval= FALSE}
+SELECT nom_com, nom_poll, mois, ROUND(AVG(valeur_poll),2) AS moyenne_pollution
+                FROM mesures_occitanie_pollution
+                WHERE (lower(nom_com) = 'montpellier' or lower(nom_com)= 'lattes') AND annee =2025 AND nom_poll ='O3'
+                GROUP BY nom_com, nom_poll, mois ; 
+```
+Cette requête permet de calculer la moyenne de pollution pour le polluant en commun O3 en 2025 avec l’attribut valeur_poll grâce à <strong>AVG puis ROUND</strong>, pour les communes nom_com Montpellier et Lattes filtrées avec <strong>LOWER</strong>, puis de regrouper les résultats par mois avec <strong>GROUP BY</strong> afin d’obtenir une moyenne mensuelle de l’ozone par commune. Nous utilisons ensuite un graphique en courbes représentant la pollution moyenne en fonction des mois pour chaque commune.
+
+**Graphe :**
+
+```{r, fig.width=7, fig.height=5, echo=FALSE}
+
+donnees4 <- read.csv2("../problematique1/csv/O3_mensuelle_2025_montpellier_et_lattes.csv")
+donnees4$moyenne_pollution <- as.numeric(gsub(",", ".", donnees4$moyenne_pollution))
+
+lattes <- donnees4[donnees4$nom_com == "LATTES", ]
+montpellier <- donnees4[donnees4$nom_com == "MONTPELLIER", ]
+
+plot(lattes$mois, lattes$moyenne_pollution,
+     type = "o",
+     col = "purple",
+     pch = 16,
+     ylim = range(donnees4$moyenne_pollution),
+     xlab = "Mois",
+     ylab = "Moyenne")
+
+lines(montpellier$mois, montpellier$moyenne_pollution,
+      type = "o",
+      col = "blue",
+      pch = 16)
+
+legend("topright",
+       legend = c("Lattes", "Montpellier"),
+       col = c("purple", "blue"),
+       lty = 1,
+       pch = 16,
+       cex = 0.8)
+```
+
+**Interprétation :**  
+Le graphique montre que les deux villes présentent des évolutions similaires au cours des mois. Cela indique que la proximité géographique influence la pollution, même si des écarts ponctuels peuvent exister.
+
+<br/>
+
+### 3-Conclusion générale {#conclusion1}
+
+À travers les différentes analyses, on observe que les villes proches géographiquement, comme Montpellier et Lattes, présentent globalement des niveaux de pollution assez similaires.  
+
+Dans un premier temps, l’analyse univariée a permis de décrire les niveaux de pollution dans chaque commune et d’avoir une première vision des données.  
+
+Dans un second temps, les analyses bivariées ont permis de comparer les deux villes selon plusieurs critères (polluants, évolution dans le temps, etc.).  
+
+Les résultats montrent que les tendances sont proches, que ce soit sur les moyennes, les polluants ou encore l’évolution dans le temps. Cela suggère que la proximité géographique a une influence sur la pollution.  
+
+Cependant, certaines différences apparaissent selon les polluants et les périodes. Cela montre que la proximité ne suffit pas à expliquer entièrement les variations observées et que d’autres facteurs peuvent intervenir.  
+
+On peut donc conclure que la proximité géographique a un impact sur la pollution, mais qu’elle n’est pas le seul élément explicatif.
+
+<br/>
+<br/>
+
+
+
+
+
+
+## Problématique 2 : Les conditions climatiques ont-elles un impact sur les concentrations de polluants ? {#pb2}
+
+Pour étudier l’impact des conditions climatiques sur la pollution de l’air, nous avons utilisé les données présentes dans la base de données construite précédemment. L’objectif est de mettre en relation les variables climatiques avec les concentrations de polluants pour une même commune.
+
+Pour celà, nous avons relié la table contenant les mesures de pollution (mesures_occitanie_pollution) avec la table contenant les données climatiques (mesures_geographique_climatique). Cette liaison est faite grâce à la variable code_insee_com, qui correspond à un identifiant unique pour chaque commune.
+
+Dans un premier temps, nous réalisons une analyse univariée afin de décrire certaines variables de pollution et mieux comprendre leur distribution.  
+
+Dans un second temps, nous effectuons une analyse bivariée afin d’étudier les relations entre les variables climatiques (température, pluie, vent) et les concentrations de polluants.
+
+### 1-Analyse univariée {#analyse21}
+
+Dans un premier temps, nous étudions certaines variables climatiques et de pollution individuellement afin de mieux comprendre leur distribution.
+Nous nous intéressons par exemple à la variable "ozone moyen".
+
+Requête :
+```{sql eval= FALSE}
+SELECT ROUND(c.Tmax_med) AS temperature, AVG(p.valeur_poll) AS ozone_moyen
+                    FROM mesures_occitanie_pollution as p
+                    INNER JOIN geo_climatique as c ON p.code_insee = c.code_insee
+                    WHERE p.nom_poll = 'O3'
+                    GROUP BY ROUND(c.Tmax_med)
+                    ORDER BY temperature ; 
+
+```
+Cette requête analyse le lien entre la température et l’ozone en calculant la moyenne de valeur_poll avec <strong>AVG</strong> pour le polluant O3, en reliant les tables mesures_occitanie_pollution et geo_climatique via code_insee avec **INNER JOIN**, en utilisant **ROUND** sur T_max_med pour regrouper les températures, puis en regroupant avec **GROUP BY** et en triant avec **ORDER BY** température.
+
+Nous avons donc utiliser cette requête pour pouvoir faire :
+```{r echo=FALSE}
+data_temp <- read.csv2("../problematique2/csv/ozone_temperature.csv")
+
+data_temp$ozone_moyen <- as.numeric(gsub(",", ".", data_temp$ozone_moyen))
+
+summary(data_temp$ozone_moyen)
+
+hist(data_temp$ozone_moyen,
+     col = "lightblue",
+     main = "Distribution de l’ozone moyen",
+     xlab = "Ozone moyen")
+```
+
+**Interprétation :**  
+Cette première analyse permet d’observer la répartition de l’ozone moyen. Elle permet de mieux comprendre les données avant d’étudier la relation entre la température et la concentration d’ozone.
+
+### 2-Analyse bivariée {#analyse22}
+
+#### a-Influence de la température sur la concentration d’ozone {#2a2}
+
+Nous réalisons ici une analyse bivariée afin d’étudier la relation entre la température et la concentration d’ozone.
+
+**Question :**  
+La température influence-t-elle la concentration d’ozone ?
+
+**Justification :**  
+Nous étudions cette relation car certaines conditions climatiques, comme la température, peuvent favoriser la formation de certains polluants comme l’ozone.
+
+**Méthode :**  
+Ici dans cette analyse, on a utilisé le même fichier **CSV**, que celui utiliser précédement.
+Pour l'interpréter différement nous avons utiliser un nuage de points permettant de comparer la concentration d’ozone selon différents niveaux de température.
+
+**Graphe :**
+
+```{r echo=FALSE}
+data_temp <- read.csv2("../problematique2/csv/ozone_temperature.csv")
+
+data_temp$temperature <- as.numeric(gsub(",", ".", data_temp$temperature))
+data_temp$ozone_moyen <- as.numeric(gsub(",", ".", data_temp$ozone_moyen))
+
+data_temp$classe_temp <- cut(data_temp$temperature,
+                             breaks = 3,
+                             labels = c("Faible", "Moyenne", "Élevée"))
+
+ggplot(data_temp, aes(x = temperature, y = ozone_moyen)) +
+  geom_point(size = 3, color = "lightpink") +
+  geom_smooth(method = "lm",formula = 'y ~ x',se = FALSE, color = "#C2185B") +
+  theme_minimal() +
+  labs(title = "Relation entre la température et l’ozone",
+       x = "Température",
+       y = "Ozone moyen")
+```   
+  
+**Interprétation :**  
+Le nuage de points nous permet de voir, à peu près, que malgré quelques valeurs aberrantes, plus la température augmente, plus la quantité du polluant ozone diminue. Cependant, par manque de données, étant donné que l’on a seulement 6 données, on ne peut pas affirmer que cela est vrai partout en Occitanie. Cela suggère que la température semblerait avoir un impact sur la formation de l’ozone, pour ce cas-là.
+ 
+#### b-Influence de la pluie sur la concentration de PM10 {#2b2}
+
+Nous réalisons ici une analyse bivariée afin d’étudier la relation entre la pluie et la concentration de PM10.
+
+**Question :**  
+La pluie influence-t-elle la concentration de PM10 ?
+
+**Justification :**  
+La pluie peut réduire les particules fines présentes dans l’air en les entraînant vers le sol.
+
+**Méthode :**  
+Pour y répondre nous avons eu besoins d'un certains nombre de données que nous avons extrait, à l'aide de cette requête:
+```{sql eval= FALSE}
+SELECT ROUND(c.RR_med) AS pluie, AVG(p.valeur_poll) AS PM10
+                FROM mesures_occitanie_pollution as p
+                INNER JOIN geo_climatique as c ON p.code_insee = c.code_insee
+                WHERE p.nom_poll = 'PM10'
+                GROUP BY pluie
+                ORDER BY pluie;
+```
+Cette requête analyse la relation entre la pluie et le PM10 en
+calculant la moyenne de valeur_poll avec **AVG** pour le polluant PM10, en reliant les tables via code_insee avec **INNER JOIN**, en regroupant les précipitations RR_med, puis en groupant avec **GROUP BY** 'pluie' et en triant avec **ORDER BY** pluie.
+
+Pour analyser cette relation, nous utilisons un nuage de points avec une droite de tendance afin de visualiser le lien entre la pluie et la concentration de PM10.
+
+**Graphe :**
+
+```{r echo=FALSE}
+data_pm10 <- read.csv2("../problematique2/csv/pm10_pluie.csv")
+
+data_pm10$PM10_moyen <- as.numeric(gsub(",", ".", data_pm10$PM10_moyen))
+data_pm10$pluie_RR_med <- as.numeric(gsub(",", ".", data_pm10$pluie_RR_med))
+
+library(ggplot2)
+
+ggplot(data_pm10, aes(x = pluie_RR_med, y = PM10_moyen)) +
+  geom_point(aes(color = PM10_moyen), size = 3) +
+  geom_smooth(method = "loess",formula = y ~ x, se = FALSE, color = "black") +
+  scale_color_gradient(low = "blue", high = "red") +
+  scale_x_continuous(breaks = seq(0, max(data_pm10$pluie_RR_med, na.rm = TRUE), by = 10)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Relation entre la pluie et le PM10",
+       x = "Pluie",
+       y = "PM10 moyen",
+       color = "PM10")
+```
+
+**Interprétation :**  
+Le graphique montre la relation entre la quantité de pluie et la concentration de PM10. On observe que lorsque la pluie augmente, les niveaux de PM10 ont tendance à diminuer.  
+
+Cela suggère que la pluie contribue à réduire la concentration de particules fines dans l’air, même si la dispersion des points indique que d’autres facteurs peuvent également influencer ce phénomène.
+
+#### c-Influence du vent sur la pollution {#2c2}
+
+Nous réalisons ici une analyse bivariée afin d’étudier la relation entre la vitesse du vent et la pollution moyenne.
+
+**Question :**  
+Le vent influence-t-il la pollution moyenne ?
+
+**Justification :**  
+Le vent peut disperser les polluants et ainsi réduire leur concentration dans l’air.
+
+**Méthode :**  
+Extraction des données nécessaires :
+```{sql eval= FALSE}
+SELECT c.Force_vent_med, AVG(p.valeur_poll) AS pollution_moyenne
+                    FROM mesures_occitanie_pollution as p
+                    INNER JOIN geo_climatique as c ON p.code_insee = c.code_insee
+                    GROUP BY c.Force_vent_med
+                    ORDER BY c.Force_vent_med asc ;
+```
+Cette requête analyse l’eﬀet du vent sur la pollution en utilisant l’attribut Force_vent_med pour regrouper les données et l’attribut valeur_poll pour calculer la moyenne de pollution avec **AVG (pollution moyenne)**, en reliant les tables avec l’attribut code_insee via **INNER JOIN**, puis regroupant avec **GROUP BY** Force_vent_med et en triant avec **ORDER BY** Force_vent_med afin d’étudier la variation de la pollution selon la force du vent.
+
+Pour analyser cette relation, nous utilisons un nuage de points avec une droite de tendance afin de visualiser le lien entre la vitesse du vent et la pollution moyenne.
+
+**Graphe :**
+
+```{r echo=FALSE}
+data_vent <- read.csv2("../problematique2/csv/pollution_vent.csv")
+
+data_vent$pollution_moyenne <- as.numeric(gsub(",", ".", data_vent$pollution_moyenne))
+
+ggplot(data_vent, aes(x = vent, y = pollution_moyenne)) +
+  geom_point(color = "darkgreen", size = 3) +
+  geom_smooth(method = "lm",formula = y ~ x, se = FALSE, color = "black") +
+  theme_minimal() +
+  labs(title = "Influence du vent sur la pollution",
+       x = "Vitesse du vent",
+       y = "Pollution moyenne")
+```
+
+**Interprétation :**  
+Le graphique montre la relation entre la vitesse du vent et la pollution moyenne. On observe que lorsque la vitesse du vent augmente, la pollution a tendance à diminuer.  
+
+Cela suggère que le vent joue un rôle dans la dispersion des polluants. Cependant, la dispersion des points indique que d’autres facteurs peuvent également influencer les niveaux de pollution.
+
+### 3-Conclusion générale {#conclusion2}
+
+L’étude des différentes sous-problématiques montre que les conditions climatiques ont bien un impact sur les concentrations de polluants, même si cet impact varie selon les variables étudiées.
+
+Dans un premier temps, l’analyse univariée a permis de mieux comprendre la distribution des variables de pollution, notamment l’ozone, et d’avoir une première vision des données.
+
+Dans un second temps, les analyses bivariées ont permis de mettre en évidence des relations entre les variables climatiques et les polluants.
+
+La température semble avoir une influence importante, notamment sur l’ozone, dont la concentration augmente avec la chaleur. La pluie, quant à elle, tend à diminuer la pollution et les particules fines (PM10), en nettoyant l’air. Enfin, le vent semble également jouer un rôle dans la dispersion des polluants, même si son effet apparaît moins marqué.
+
+Ainsi, les conditions climatiques influencent globalement la qualité de l’air, mais elles ne sont pas les seuls facteurs explicatifs. D’autres éléments, comme les activités humaines ou la densité de population, peuvent également intervenir.
+
+<br/>
+<br/>
+
+
+
+
+
+
+## Problématique 3 : Y a-t-il un lien entre la concentration des populations et la concentration des polluants ? {#pb3}
+
+Pour étudier le lien entre la densité de population et la pollution de l’air, nous avons utilisé les données issues de la base de données construite précédemment. L’objectif est de mettre en relation les caractéristiques des communes, notamment la population ou la densité, avec les niveaux de pollution.
+
+Pour cela, nous avons exploité la table contenant les mesures de pollution (mesures_occitanie_pollution) ainsi que la table contenant les données géographiques et démographiques (mesures_geographique_climatique). Ces deux tables ont été reliées grâce à la variable code_insee_com, qui permet d’identifier de manière unique chaque commune.
+
+Cette jointure nous a permis d’obtenir, pour chaque commune, à la fois des informations sur la population et sur les concentrations de polluants, afin de réaliser les analyses statistiques nécessaires aux sous-problématiques.
+
+<br/>
+
+Dans un premier temps, nous réalisons une analyse univariée afin de décrire les niveaux de pollution et les caractéristiques de population dans les communes étudiées.
+
+Dans un second temps, nous effectuons des analyses bivariées afin d’étudier les relations entre la population et la pollution.
+
+
+### 1-Analyse univariée {#analyse31}
+
+#### a-Les grandes villes présentent-elles des niveaux de pollution plus élevés ? {#3a1}
+
+Nous réalisons ici une analyse bivariée afin d’étudier la relation entre la taille de la commune et la pollution.
+
+**Question :**  
+Les grandes villes présentent-elles des niveaux de pollution plus élevés ?
+
+**Justification :**  
+Les grandes villes concentrent davantage d’activités humaines, de circulation et d’industries, ce qui peut entraîner une augmentation de la pollution.
+
+**Méthode :**  
+Extraction des données nécessaires :
+```{sql eval= FALSE}
+SELECT s.nom_com, AVG(p.valeur_poll) AS pollution_moyenne_2023, s.population_municipale_2023
+                FROM mesures_occitanie_pollution as p
+                INNER JOIN socio_economique as s ON p.code_insee = s.code_insee
+                WHERE p.annee = 2023 AND s.population_municipale_2023 > 10000
+                GROUP BY s.code_insee, s.nom_com, s.population_municipale_2023
+                ORDER BY pollution_moyenne_2023 DESC;
+```
+Cette requête calcule la pollution moyenne en 2023 avec l’attribut valeur_poll grâce à **AVG (pollution_moyenne_2023)**, en utilisant nom_com et population_municipale_2023 de la table socio_economique, en reliant les tables avec code_insee via **INNER JOIN**, en filtrant sur année = 2023 et population_municipale_2023 > 10000, puis en regroupant par code_insee, nom_com et population_municipale_2023 et en triant avec **ORDER BY** pollution_moyenne_2023.
+
+Pour analyser cette relation, nous utilisons un graphique en bâtons verticaux permettant de représenter la pollution moyenne pour chaque grande ville. Ce type de graphique permet de comparer facilement les niveaux de pollution entre les différentes communes.
+
+**Graphe :**
+
+```{r echo=FALSE}
+data_villes <- read.csv2("../problematique3/csv/pollution_grandes_villes_2023.csv")
+
+data_villes$pollution_moyenne_2023 <- as.numeric(gsub(",", ".", data_villes$pollution_moyenne_2023))
+
+data_villes <- data_villes[order(data_villes$pollution_moyenne_2023), ]
+
+ggplot(data_villes, aes(x = reorder(nom_commune, pollution_moyenne_2023),
+                        y = pollution_moyenne_2023)) +
+  geom_segment(aes(x = nom_commune, xend = nom_commune,
+                   y = 0, yend = pollution_moyenne_2023),
+               color = "orange", linewidth = 2) +
+  geom_point(color = "blue", size = 3) +
+  theme_classic() +
+  labs(title = "Pollution moyenne par ville",
+       x = "Communes",
+       y = "Pollution moyenne") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+**Interprétation :**  
+Ce graphique permet de comparer les niveaux de pollution moyenne entre les différentes grandes villes. On observe des différences importantes d’une commune à une autre, certaines villes présentant des niveaux de pollution nettement plus élevés. Cela montre que toutes les grandes villes ne sont pas exposées de la même manière à la pollution, ce qui peut s’expliquer par des facteurs locaux comme le trafic, l’activité industrielle ou les conditions géographiques.
+
+
+#### b-Les petites communes sont-elles moins polluées que les grandes villes ? {#3b1}
+
+Nous réalisons ici une analyse bivariée afin d’étudier la relation entre le type de commune (petite ou grande) et la pollution.
+
+**Question :**  
+Les petites communes sont-elles moins polluées que les grandes villes ?
+
+**Justification :**  
+Les petites communes présentent généralement moins de trafic et d’activités humaines, ce qui peut entraîner des niveaux de pollution plus faibles.
+
+**Méthode :**  
+Extraction des données:
+```{sql eval=FALSE}
+SELECT s.nom_com, AVG(p.valeur_poll) AS pollution_moyenne_2023, s.population_municipale_2023
+                    FROM mesures_occitanie_pollution as p
+                    INNER JOIN socio_economique as s ON p.code_insee = s.code_insee
+                    WHERE p.annee = 2023 AND s.population_municipale_2023 <= 10000
+                    GROUP BY s.code_insee, s.nom_com, s.population_municipale_2023
+                    ORDER BY pollution_moyenne_2023 DESC;
+```
+Cette requête calcule la pollution moyenne en 2023 avec l’attribut valeur_poll grâce à **AVG (pollution_moyenne_2023)**, en utilisant nom_com et population_municipale_2023 table socio_economique, en reliant les tables avec de la code_insee via **INNER JOIN**, en filtrant sur année = 2023 et population_municipale_2023 <= 10000, puis en regroupant par code_insee, nom_com et population_municipale_2023 avec **GROUP BY** et en triant les résultats par pollution_moyenne_2023 avec **ORDER BY**.
+
+Pour analyser cette relation, nous utilisons une boîte à moustaches afin de représenter la distribution des niveaux de pollution dans les petites communes. Cela permet d’observer la dispersion des valeurs ainsi que les éventuelles valeurs extrêmes.
+
+**Graphe :**
+
+```{r echo=FALSE}
+data_petites <- read.csv2("../problematique3/csv/pollution_petites_communes_2023.csv")
+
+data_petites$pollution_moyenne_2023 <- as.numeric(gsub(",", ".", data_petites$pollution_moyenne_2023))
+
+ggplot(data_petites, aes(y = pollution_moyenne_2023)) +
+  geom_boxplot(fill = "lightgreen") +
+  theme_classic() +
+  labs(title = "Pollution dans les petites communes",
+       y = "Pollution moyenne")
+```
+
+**Interprétation :**  
+La boîte à moustaches montre la répartition des niveaux de pollution dans les petites communes. On observe que les valeurs sont globalement plus faibles que dans les grandes villes, même si certaines communes présentent des valeurs plus élevées. Cela suggère que les petites communes sont généralement moins exposées à la pollution.
+
+### 2-Analayse bivariée {#analyse32}
+```{sql eval=FALSE}
+# Même requête vue un peu plus haut
+```
+
+```{r echo=FALSE}
+data_uni <- read.csv2("../problematique3/csv/pollution_grandes_villes_2023.csv")
+
+data_uni$pollution_moyenne_2023 <- as.numeric(
+  gsub(",", ".", data_uni$pollution_moyenne_2023)
+)
+
+par(mar = c(12, 4, 4, 2))  
+barplot(data_uni$pollution_moyenne_2023,
+        names.arg = data_uni$nom_commune,
+        las = 2,
+        cex.names = 0.8,  
+        col = "orange",
+        main = "Pollution moyenne 2023 par ville",
+        ylab = "Pollution")
+```
+
+**Interprétation :**  
+Cette analyse permet d’observer la répartition des niveaux de pollution dans les grandes villes. On constate une certaine variation entre les communes, ce qui montre que toutes les villes ne sont pas exposées de la même manière à la pollution.
+
+#### a-L’évolution de la population influence-t-elle la pollution ? {#3a2}
+
+Nous réalisons ici une analyse bivariée afin d’étudier la relation entre l’évolution de la population et la pollution.
+
+**Question :**  
+L’évolution de la population entre 2017 et 2023 a-t-elle un impact sur la pollution moyenne ?
+
+**Justification :**  
+Une augmentation de la population peut entraîner une hausse des activités humaines, ce qui peut augmenter la pollution.
+
+**Méthode :**  
+Extraction des données :
+```{sql eval=FALSE}
+SELECT s.evolution_2017_2023, AVG(p.valeur_poll) AS pollution_moyenne
+                    FROM mesures_occitanie_pollution as p
+                    INNER JOIN socio_economique as s ON p.code_insee = s.code_insee
+                    GROUP BY s.code_insee
+                    ORDER BY s.evolution_2017_2023 DESC;
+```
+Cette requête analyse le lien entre l’évolution de et pollution en utilisant l’attribut valeur_poll avec calculer la pollution_moyenne, et l’attribut la population **AVG** pour evolution_2017_2023, en reliant les tables via code_insee avec **INNER JOIN**, puis en regroupant par code_insee avec **GROUP BY** et en triant avec **ORDER BY** selon l’évolution de la population.
+
+Pour analyser cette relation, nous regroupons les communes selon des classes d’évolution de la population (faible, moyenne, élevée), puis nous utilisons une boîte à moustaches afin de comparer les niveaux de pollution entre ces groupes.
+
+**Graphe :**
+
+```{r echo=FALSE}
+data_evo <- read.csv2("../problematique3/csv/evolution_population_pollution.csv")
+
+data_evo$pollution_moyenne <- as.numeric(gsub(",", ".", data_evo$pollution_moyenne))
+data_evo$evolution_population_2017_2023 <- as.numeric(gsub(",", ".", data_evo$evolution_population_2017_2023))
+
+data_evo$classe_pop <- cut(data_evo$evolution_population_2017_2023,
+                           breaks = 3,
+                           labels = c("Faible", "Moyenne", "Élevée"))
+
+ggplot(data_evo, aes(x = classe_pop, y = pollution_moyenne, fill = classe_pop)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("lightblue", "orange", "red")) +
+  theme_classic() +
+  labs(title = "Pollution selon l’évolution de la population",
+       x = "Classe d’évolution de la population",
+       y = "Pollution moyenne")
+```    
+
+**Interprétation :**  
+Le graphique montre que les niveaux de pollution varient selon les classes d’évolution de la population. On observe que les communes ayant une évolution de population plus élevée tendent à présenter des niveaux de pollution légèrement plus importants. Cela suggère que la croissance démographique peut avoir un impact sur la pollution, même si les différences restent modérées.
+
+### 3-Conclusion générale {#conclusion3}
+
+À travers les différentes analyses, on observe qu’il existe un lien entre la concentration de la population et la pollution de l’air.  
+
+Dans un premier temps, l’analyse univariée a permis de mieux comprendre la répartition des niveaux de pollution et des caractéristiques de population.  
+
+Dans un second temps, les analyses bivariées ont permis de mettre en évidence des relations entre ces variables.  
+
+Les résultats montrent que les grandes villes présentent généralement des niveaux de pollution plus élevés que les petites communes, ce qui peut s’expliquer par une activité humaine plus importante.  
+
+Cependant, ce lien n’est pas systématique. Certaines petites communes présentent également des niveaux de pollution élevés, ce qui montre que d’autres facteurs interviennent.  
+
+On peut donc conclure que la population influence la pollution, mais qu’elle n’est pas le seul facteur explicatif.
+
+<br/>
+<br/>
+
+
+
+
+
+
+# IV-Conclusion {#conclusion}
+L’ensemble des analyses réalisées sur la qualité de l’air en Occitanie met en évidence l’influence de plusieurs facteurs interdépendants. Tout d’abord, l’étude de communes géographiquement proches, comme Montpellier et Lattes, montre des profils de pollution globalement similaires, traduisant l’effet de la proximité spatiale, bien que des écarts ponctuels apparaissent selon les polluants et les périodes étudiées. Ensuite, les conditions climatiques, notamment la température, les précipitations et le vent, jouent un rôle majeur dans la variation des concentrations de polluants, en influençant leur formation, leur dispersion et leur élimination. Enfin, la densité de population et l’intensité des activités humaines constituent également des facteurs déterminants, pouvant accentuer localement les niveaux de pollution.  
+
+Ce travail, construit à partir de l’exploitation et de l’analyse de données, s’est appuyé sur trois problématiques principales, permettant d’explorer de manière progressive et structurée les différents déterminants de la pollution atmosphérique. Cette démarche a nécessité un travail approfondi afin de croiser les données géographiques, climatiques et démographiques, et d’en dégager des tendances significatives.
+
+Cependant, cette étude souligne également la complexité de l’analyse de la qualité de l’air à l’échelle de communes proches. Les interactions entre les paramètres météorologiques, les sources d’émission et les spécificités locales rendent difficile l’identification d’un facteur unique explicatif. Les variations observées résultent le plus souvent de phénomènes multiples et simultanés, ce qui limite la possibilité d’établir des relations simples et systématiques.
+
+Ainsi, bien que certaines tendances générales se dégagent, notamment l’influence des conditions climatiques et de l’urbanisation, il apparaît particulièrement difficile de déterminer avec certitude le facteur principal de la pollution. Cette complexité met en évidence la nécessité d’adopter une approche globale et multifactorielle pour mieux comprendre les dynamiques de la qualité de l’air et envisager des actions adaptées à l’échelle régionale.
+
+
+
+
+
