@@ -1,4 +1,7 @@
 # Projet Pollution Occitanie
+## Carte de la région étudiée
+
+![Carte Occitanie](rapport/image/carte_occitanie.png)
 
 ## Contexte
 
@@ -10,6 +13,9 @@ L'objectif est d'étudier les liens entre :
 * les données socio-économiques ;
 * les mesures de pollution ;
 * l'évolution de la population.
+## Diagramme d'activité
+
+![Diagramme d'activité](rapport/image/diagramme_activitee.jpg)
 
 ## Technologies utilisées
 
