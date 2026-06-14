@@ -1,4 +1,9 @@
 # Projet Pollution Occitanie
+
+## Organisaton
+![Structure](rapport/image/structure_Github.png)
+![Aperçu](rapport/image/aperçu_fichiers.png)
+
 ## Carte de la région étudiée
 
 ![Carte Occitanie](rapport/image/carte_occitanie.png)
