@@ -14,9 +14,9 @@ L'objectif est d'étudier les liens entre :
 ## Technologies utilisées
 
 * Python
+* Csv
+* Rmarkdown
 * SQLite
-* Pandas
-* Matplotlib
 * SQL
 * HTML / PHP
 
