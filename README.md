@@ -39,6 +39,12 @@ L'objectif est d'étudier les liens entre :
 
 Le projet met en évidence plusieurs corrélations entre les indicateurs climatiques et les niveaux de pollution observés dans différentes communes d'Occitanie.
 
+## 📄 Rapport final
+
+-> Le rapport complet du projet est disponible ici :
+**[Consulter le rapport interactif](rapport/rapport_final.html)**
+
+
 ## Auteurs
 
 AYEDI Zouaouia
