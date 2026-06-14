@@ -42,7 +42,7 @@ Le projet met en évidence plusieurs corrélations entre les indicateurs climati
 ## 📄 Rapport final
 
 -> Le rapport complet du projet est disponible ici :
-**[Consulter le rapport interactif](rapport_pollution.html)**
+**[Consulter le rapport interactif](rapport/rapport_final.html)**
 
 
 ## Auteurs
