@@ -3,7 +3,7 @@
 ## Organisaton
 ![Structure](rapport/image/structure_Github.png)
 
-![Aperçu](rapport/image/aperçu_fichiers.png)
+![Aperçu](rapport/image/apercu_fichiers.png)
 
 ## Carte de la région étudiée
 
